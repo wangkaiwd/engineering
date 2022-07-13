@@ -13,11 +13,14 @@ program.parse();
 // serve -p80
 // serve --port 80
 // serve --port=80
-const options = program.opts()
+
+// only obtain global program options
+// can't obtain options under some subcommand scope
+const options = program.opts();
 console.log('options', options);
 
 // leaving any args not consumed by the program options in the `program.args` array
-const leaveArgs = program.args
+const leaveArgs = program.args;
 console.log('args', leaveArgs);
 
 console.log(leaveArgs[0].split(options.separator));
