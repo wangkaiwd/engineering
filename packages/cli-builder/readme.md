@@ -9,6 +9,7 @@
 * execa
 * semver
 * chalk
+* npmlog
 * fs-extra
 * detect-port
 * chokidar
@@ -24,7 +25,13 @@ or absolute specifiers. So I think wo have two choice:
 * Manual add file extensions for every `import` keyword specifiers, we can complete this by `IDE`
 * Auto add file extensions by compiler such as `webpack`,`rollup`,`vite` and so on
 
+Problems:
+
+* __filename,__dirname work correctly in ts but occur error in js
+
 ### Rollup
+
+Why use rollup to generate bundle ?
 
 Note: rollup can not compile file that own shebang characters.
 

@@ -1,6 +1,8 @@
 import chokidar from 'chokidar';
 import path from 'path';
 import { StartOptions } from './types';
+import { dirname } from './shared/url';
+import cliLog from './shared/logger';
 
 const CONFIG_FILENAME = 'lib.config.ts';
 
@@ -20,10 +22,11 @@ class DevService {
   }
 
   watch () {
-    const configFilePath = path.resolve(__dirname, CONFIG_FILENAME);
-    chokidar.watch(configFilePath).on('all', (eventName, path, stats) => {
-      console.log('eventName,path,stats', eventName, path, stats);
-    });
+    const configFilePath = path.resolve(dirname, CONFIG_FILENAME);
+    cliLog('configFilePath', configFilePath);
+    // chokidar.watch(configFilePath).on('all', (eventName, path, stats) => {
+    //   console.log('eventName,path,stats', eventName, path, stats);
+    // });
   }
 }
 

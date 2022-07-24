@@ -1,6 +1,7 @@
 import { StartOptions } from './types.js';
 import detectPort from 'detect-port';
 import DevService from './DevService';
+import cliLog from './shared/logger';
 
 const start = async (options: StartOptions) => {
   const { port } = options;
@@ -11,6 +12,7 @@ const start = async (options: StartOptions) => {
     service.start();
   } else {
     // port was occupied, try new port ?
+    cliLog.info(`port ${portNumber} was occupied, try new port ${newPort}`);
   }
 };
 

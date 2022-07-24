@@ -19,7 +19,7 @@ export default {
   },
   external,
   plugins: [
-    esbuild(),
+    esbuild({ target: 'esnext' }),
     resolve(),
     commonjs(),
     json({ preferConst: true })
