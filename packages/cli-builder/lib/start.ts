@@ -1,4 +1,4 @@
-import { StartOptions } from './types';
+import { StartOptions } from './types.js';
 import detectPort from 'detect-port';
 import DevService from './DevService';
 

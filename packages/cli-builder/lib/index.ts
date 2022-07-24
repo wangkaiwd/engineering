@@ -1,7 +1,18 @@
-import chokidar from 'chokidar';
-import path from 'path';
+import { Command } from 'commander';
+import start from './start';
+import pkg from '../package.json';
 
-const configFilePath = path.resolve(__dirname, './lib.config.ts');
-chokidar.watch(configFilePath).on('all', (eventName, path, stats) => {
-  console.log('eventName,path,stats', eventName, path, stats);
-});
+const program = new Command();
+
+program
+  .name('sppk')
+  .version(pkg.version);
+
+program
+  .command('start', 'start a server for develop')
+  .option('-p, --port <port-number>', 'specify port number for server', '3000')
+  .action(async (options) => {
+    await start(options);
+  });
+
+program.parse();
