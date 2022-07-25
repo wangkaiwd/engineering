@@ -12,7 +12,8 @@ const start = async (options: StartOptions) => {
     service.start();
   } else {
     // port was occupied, try new port ?
-    cliLog.info(`port ${portNumber} was occupied, try new port ${newPort}`);
+    cliLog(`port ${portNumber} was occupied, try new port ${newPort}`);
+    cliLog.verbose('this is verbose message');
   }
 };
 

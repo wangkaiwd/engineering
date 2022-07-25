@@ -1,8 +1,7 @@
 import { Command } from 'commander';
 import start from './start';
 import { CLI_NAME, VERSION } from './shared/constant';
-import cliLog from './shared/logger';
-import chalk from 'chalk';
+import { setLogLevel } from './shared/logger';
 
 const program = new Command();
 
@@ -13,10 +12,16 @@ program
 
 program
   .option('-d, --debug', 'enable debug mode')
-  .action((options) => {
-    // fixme: why this not log ?
-    cliLog(options.debug);
+  .hook('preAction', (thisCommand) => {
+    const { debug } = thisCommand.opts();
+    console.log('debug', debug);
+    // must set log level before other logic
+    setLogLevel(debug ? 'verbose' : 'info');
   });
+// this not execute when add command
+// .action((...args) => {
+//   console.log('args', args);
+// });
 
 program
   // todo: try standalone command

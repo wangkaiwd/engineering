@@ -8,6 +8,7 @@ import { builtinModules } from 'module';
 const external = [
   'fsevents',
   ...Object.keys(pkg.dependencies),
+  ...Object.keys(pkg.devDependencies),
   ...builtinModules
 ];
 export default {

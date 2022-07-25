@@ -9,7 +9,6 @@ import chalk from 'chalk';
 // Usage:
 // log[level](message)
 // log(message)
-//
 type CliLogLevels = 'silly' | 'verbose' | 'info' | 'http' | 'warn' | 'error'
 type LevelFn = (message: string, ...args: any[]) => void
 type LogProps = {
@@ -41,6 +40,10 @@ const cliLog = levelFnCreator('info') as LogProps;
 logLevels.forEach(level => {
   cliLog[level] = levelFnCreator(level);
 });
+
+export const setLogLevel = (level: CliLogLevels) => {
+  npmlog.level = level;
+};
 
 export default cliLog;
 
