@@ -23,7 +23,7 @@ class DevService {
 
   watch () {
     const configFilePath = path.resolve(dirname, CONFIG_FILENAME);
-    cliLog('configFilePath', configFilePath);
+    cliLog.notice('configFilePath', configFilePath);
     // chokidar.watch(configFilePath).on('all', (eventName, path, stats) => {
     //   console.log('eventName,path,stats', eventName, path, stats);
     // });

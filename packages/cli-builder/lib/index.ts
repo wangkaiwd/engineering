@@ -14,7 +14,6 @@ program
   .option('-d, --debug', 'enable debug mode')
   .hook('preAction', (thisCommand) => {
     const { debug } = thisCommand.opts();
-    console.log('debug', debug);
     // must set log level before other logic
     setLogLevel(debug ? 'verbose' : 'info');
   });
