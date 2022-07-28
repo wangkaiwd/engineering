@@ -1,10 +1,6 @@
-import chokidar from 'chokidar';
-import path from 'path';
+import path from 'node:path';
 import { StartOptions } from './types';
-import { dirname } from './shared/url';
-import cliLog from './shared/logger';
-
-const CONFIG_FILENAME = 'lib.config.ts';
+import { CONFIG_FILENAME } from './shared/constant';
 
 class DevService {
   private options: StartOptions;
@@ -13,17 +9,20 @@ class DevService {
     this.options = options;
   }
 
-  start () {
-    this.runWatcher();
+  async start () {
+    await this.runWatcher();
   }
 
-  runWatcher () {
-    this.watch();
+  async runWatcher () {
+    await this.watch();
   }
 
-  watch () {
-    const configFilePath = path.resolve(dirname, CONFIG_FILENAME);
-    cliLog.notice('configFilePath', configFilePath);
+  async watch () {
+    const configFilePath = path.resolve(process.cwd(), CONFIG_FILENAME);
+    // if (fs.existsSync(configFilePath)) {
+    //   const { default: userConfig } = await import(configFilePath);
+    //   console.log('useConfig', userConfig);
+    // }
     // chokidar.watch(configFilePath).on('all', (eventName, path, stats) => {
     //   console.log('eventName,path,stats', eventName, path, stats);
     // });
