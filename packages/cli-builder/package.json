@@ -6,8 +6,9 @@
     "sppk": "./cli.js"
   },
   "scripts": {
-    "start": "rollup -wc",
-    "build": "rollup -c"
+    "clean": "rm -rf dist",
+    "start": "pnpm run clean && rollup -wc --environment MODE:dev",
+    "build": "pnpm run clean && rollup -c --environment MODE:prod"
   },
   "type": "module",
   "keywords": [],

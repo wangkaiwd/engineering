@@ -5,6 +5,8 @@ import json from 'rollup-plugin-json';
 import pkg from './package.json';
 import { builtinModules } from 'module';
 
+const MODE = process.env.MODE;
+const isDev = MODE === 'dev';
 const external = [
   'fsevents',
   ...Object.keys(pkg.dependencies),
@@ -16,6 +18,7 @@ export default {
   output: {
     dir: './dist',
     format: 'es',
+    sourcemap: isDev,
     preserveModules: true
   },
   external,
