@@ -13,19 +13,26 @@ const external = [
   ...Object.keys(pkg.devDependencies),
   ...builtinModules
 ];
-export default {
-  input: './lib/index.ts',
-  output: {
-    dir: './dist',
-    format: 'es',
-    sourcemap: isDev,
-    preserveModules: true
-  },
-  external,
-  plugins: [
-    esbuild({ target: 'esnext' }),
-    resolve(),
-    commonjs(),
-    json({ preferConst: true })
-  ]
+const createConfig = (input, dir) => {
+  return {
+    input,
+    output: {
+      dir,
+      format: 'es',
+      sourcemap: isDev,
+      preserveModules: true
+    },
+    external,
+    plugins: [
+      esbuild({ target: 'esnext' }),
+      resolve(),
+      commonjs(),
+      json({ preferConst: true })
+    ]
+  };
 };
+export default [
+  createConfig('./lib/index.ts', './dist'),
+  // build child process
+  createConfig('./lib/webpack/DevServer.ts', './dist/lib/webpack'),
+];

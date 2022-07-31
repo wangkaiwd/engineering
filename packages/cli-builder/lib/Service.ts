@@ -1,10 +1,17 @@
 import path from 'node:path';
 import type { StartOptions } from './types';
-import { CONFIG_FILENAME } from './shared/constant';
-import DevServer from './webpack/DevServer';
+import type { ChildProcess } from 'child_process';
+import { fork } from 'child_process';
+import { getDirname, getUserConfigFilePath } from './shared/url';
+import fs from 'fs';
+import chokidar from 'chokidar';
+import cliLog from './shared/logger';
+
+const dirname = getDirname(import.meta.url);
 
 class Service {
   options: StartOptions;
+  devServerChildProcess?: ChildProcess;
 
   constructor (options: StartOptions) {
     this.options = options;
@@ -16,24 +23,25 @@ class Service {
   }
 
   runServer = async () => {
-    const devServer = new DevServer();
-    await devServer.runServer();
+    // must build child process code individually
+    this.devServerChildProcess = fork(path.resolve(dirname, './webpack/DevServer.js'), ['--port', this.options.port]);
   };
 
   async runWatcher () {
     await this.watch();
   }
 
-  async watch () {
-    // const configFilePath = path.resolve(process.cwd(), CONFIG_FILENAME);
-    // if (fs.existsSync(configFilePath)) {
-    //   const { default: userConfig } = await import(configFilePath);
-    //   console.log('useConfig', userConfig);
-    // }
-    // chokidar.watch(configFilePath).on('all', (eventName, path, stats) => {
-    //   console.log('eventName,path,stats', eventName, path, stats);
-    // });
-  }
+  watch = async () => {
+    const userConfigFile = getUserConfigFilePath();
+    if (fs.existsSync(userConfigFile)) {
+      const { default: userConfig } = await import(userConfigFile);
+      chokidar.watch(userConfigFile).on('change', async () => {
+        cliLog('Config file make changes, server is restarting...');
+        this.devServerChildProcess?.kill();
+        await this.runServer();
+      });
+    }
+  };
 }
 
 export default Service;
