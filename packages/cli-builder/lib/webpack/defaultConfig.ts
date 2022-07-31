@@ -1,0 +1,3 @@
+const defaults = () => {
+  return {};
+};

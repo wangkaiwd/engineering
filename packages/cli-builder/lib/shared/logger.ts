@@ -1,4 +1,4 @@
-import npmlog, { LogLevels } from 'npmlog';
+import npmlog from 'npmlog';
 import { CLI_NAME } from './constant';
 import chalk from 'chalk';
 

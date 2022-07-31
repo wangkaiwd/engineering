@@ -1,24 +1,31 @@
 import path from 'node:path';
-import { StartOptions } from './types';
+import type { StartOptions } from './types';
 import { CONFIG_FILENAME } from './shared/constant';
+import DevServer from './webpack/DevServer';
 
-class DevService {
-  private options: StartOptions;
+class Service {
+  options: StartOptions;
 
   constructor (options: StartOptions) {
     this.options = options;
   }
 
   async start () {
+    await this.runServer();
     await this.runWatcher();
   }
+
+  runServer = async () => {
+    const devServer = new DevServer();
+    await devServer.runServer();
+  };
 
   async runWatcher () {
     await this.watch();
   }
 
   async watch () {
-    const configFilePath = path.resolve(process.cwd(), CONFIG_FILENAME);
+    // const configFilePath = path.resolve(process.cwd(), CONFIG_FILENAME);
     // if (fs.existsSync(configFilePath)) {
     //   const { default: userConfig } = await import(configFilePath);
     //   console.log('useConfig', userConfig);
@@ -29,4 +36,4 @@ class DevService {
   }
 }
 
-export default DevService;
+export default Service;
