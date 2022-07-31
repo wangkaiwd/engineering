@@ -4,7 +4,13 @@ import WebpackDevServer from 'webpack-dev-server';
 import type { Server, StartOptions } from '../types';
 import type { Configuration } from 'webpack';
 import minimist from 'minimist';
+import chalk from 'chalk';
+import os from 'os';
 
+const getIp = () => {
+  const networkInterfaces = os.networkInterfaces();
+  return networkInterfaces.en7?.[1].address;
+};
 const argv = minimist(process.argv.slice(2));
 const cwd = process.cwd();
 
@@ -30,13 +36,22 @@ class DevServer {
       },
       devServer: {
         static: path.resolve(cwd, 'dist'),
-        port: this.options.port
+        port: this.options.port,
+        client: {
+          logging: 'none'
+        }
       }
     };
   };
   createServer = () => {
     const compiler = Webpack(this.webpackConfig);
     this.server = new WebpackDevServer(this.webpackConfig.devServer, compiler);
+    compiler.hooks.done.tap('DevServer Start', (stats) => {
+      console.log('done');
+      console.log();
+      console.log(chalk.cyan(`Local-localhost:${this.options.port}`));
+      console.log(chalk.cyan(`Network-${getIp()}`));
+    });
   };
 
   runServer = async () => {
