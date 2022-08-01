@@ -1,10 +1,11 @@
 import path from 'node:path';
+import type { Configuration } from 'webpack';
 import Webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import type { Server, StartOptions } from '../types';
-import type { Configuration } from 'webpack';
 import minimist from 'minimist';
-import chalk from 'chalk';
+// @ts-ignore
+import FriendlyErrorsWebpackPlugin from '@nuxt/friendly-errors-webpack-plugin';
 import os from 'os';
 
 const getIp = () => {
@@ -26,6 +27,7 @@ class DevServer {
   }
 
   createWebpackConfig = () => {
+    const { port } = this.options;
     this.webpackConfig = {
       entry: './src/index.js',
       mode: 'development',
@@ -36,22 +38,36 @@ class DevServer {
       },
       devServer: {
         static: path.resolve(cwd, 'dist'),
-        port: this.options.port,
+        port: port,
         client: {
-          logging: 'none'
+          progress: true
         }
-      }
+      },
+      infrastructureLogging: {
+        level: 'none',
+      },
+      stats: 'errors-only',
+      plugins: [
+        new FriendlyErrorsWebpackPlugin({
+          compilationSuccessInfo: {
+            messages: [
+              `You application is running here http://localhost:${port}`,
+              `Network: http://${getIp()}:${port}`
+            ],
+          }
+        })
+      ]
     };
   };
   createServer = () => {
     const compiler = Webpack(this.webpackConfig);
     this.server = new WebpackDevServer(this.webpackConfig.devServer, compiler);
-    compiler.hooks.done.tap('DevServer Start', (stats) => {
-      console.log('done');
-      console.log();
-      console.log(chalk.cyan(`Local-localhost:${this.options.port}`));
-      console.log(chalk.cyan(`Network-${getIp()}`));
-    });
+    // compiler.hooks.done.tap('DevServer Start', (stats) => {
+    //   console.log('done');
+    //   console.log();
+    //   console.log(chalk.cyan(`Local-localhost:${this.options.port}`));
+    //   console.log(chalk.cyan(`Network-${getIp()}`));
+    // });
   };
 
   runServer = async () => {
