@@ -7,25 +7,32 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import type { Server, StartOptions } from '../types';
 // @ts-ignore
 import FriendlyErrorsWebpackPlugin from '@nuxt/friendly-errors-webpack-plugin';
+// @ts-ignore
+import ProgressWebpackPlugin from 'progress-webpack-plugin';
 import { getIp } from '../shared/ip';
+import chalk from 'chalk';
+import { loadFileConfig } from '../shared/url';
 
 const cwd = process.cwd();
+const outputPath = path.resolve(cwd, 'dist');
 
 class DevServer {
   private server!: Server;
   options: StartOptions;
+  webpackChain!: WebpackChain;
   private webpackConfig!: Configuration;
 
   constructor (options: StartOptions) {
     this.options = options;
-    this.createWebpackConfig();
-    this.createServer();
   }
 
+  resolveUserConfig = async () => {
+    const { fileConfig } = await loadFileConfig();
+    fileConfig.webpackChain(this.webpackChain);
+  };
   createWebpackConfig = () => {
     const { port } = this.options;
-    const webpackChain = new WebpackChain();
-    const outputPath = path.resolve(cwd, 'dist');
+    const webpackChain = this.webpackChain = new WebpackChain();
     // output and input
     webpackChain
       .context(path.resolve(cwd))
@@ -51,8 +58,9 @@ class DevServer {
       .use(FriendlyErrorsWebpackPlugin, [{
         compilationSuccessInfo: {
           messages: [
-            `Your application is running here http://localhost:${port}`,
-            `Network: http://${getIp()}:${port}`
+            ` App running at`,
+            ` - Local: ${chalk.cyan(`http://localhost:${port}`)}`,
+            ` - Network: ${chalk.cyan(`http://${getIp()}:${port}`)}`,
           ],
         }
       }]);
@@ -60,8 +68,12 @@ class DevServer {
     webpackChain
       .plugin('html')
       .use(HtmlWebpackPlugin, []);
-
-    const { devServer, ...restConfig } = webpackChain.toConfig();
+    webpackChain
+      .plugin('progress')
+      .use(ProgressWebpackPlugin);
+  };
+  createServer = () => {
+    const { devServer, ...restConfig } = this.webpackChain.toConfig();
     // webpackChain.
     this.webpackConfig = {
       devServer: {
@@ -77,13 +89,14 @@ class DevServer {
       },
       ...restConfig,
     };
-  };
-  createServer = () => {
     const compiler = Webpack(this.webpackConfig);
     this.server = new WebpackDevServer(this.webpackConfig.devServer, compiler);
   };
 
-  runServer = async () => {
+  run = async () => {
+    this.createWebpackConfig();
+    await this.resolveUserConfig();
+    this.createServer();
     await this.server.start();
   };
 }

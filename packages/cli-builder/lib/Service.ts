@@ -14,7 +14,7 @@ class Service {
 
   runServer = async () => {
     const devServer = new DevServer(this.options);
-    await devServer.runServer();
+    await devServer.run();
   };
 }
 
