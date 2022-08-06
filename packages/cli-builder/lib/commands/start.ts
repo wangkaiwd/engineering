@@ -1,6 +1,6 @@
 import detectPort from 'detect-port';
-import Service from './Service';
-import type { StartOptions } from './types';
+import Service from '../Service';
+import type { StartOptions } from '../types';
 import inquirer from 'inquirer';
 
 const start = async (options: StartOptions) => {

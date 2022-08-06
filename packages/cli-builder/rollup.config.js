@@ -1,7 +1,8 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import esbuild from 'rollup-plugin-esbuild';
 import json from 'rollup-plugin-json';
+import typescript from 'rollup-plugin-typescript2';
+
 import pkg from './package.json';
 import { builtinModules } from 'module';
 
@@ -13,26 +14,31 @@ const external = [
   ...Object.keys(pkg.devDependencies),
   ...builtinModules
 ];
+// both set rollup sourcemap and typescript sourcemap, sourcemap can work correctly
 const createConfig = (input, dir) => {
   return {
     input,
     output: {
       dir,
       format: 'es',
-      sourcemap: isDev,
-      preserveModules: true
+      preserveModules: true,
+      sourcemap: isDev
     },
     external,
     plugins: [
-      esbuild({ target: 'esnext' }),
       resolve(),
       commonjs(),
+      typescript({
+        tsconfigOverride: {
+          compilerOptions: {
+            sourceMap: isDev,
+          }
+        }
+      }),
       json({ preferConst: true })
     ]
   };
 };
 export default [
   createConfig('./lib/index.ts', './dist'),
-  // build child process
-  createConfig('./lib/webpack/DevServer.ts', './dist/lib/webpack'),
 ];

@@ -1,7 +1,8 @@
 import { Command } from 'commander';
-import start from './start';
+import start from './commands/start';
 import { CLI_NAME, VERSION } from './shared/constant';
 import { setLogLevel } from './shared/logger';
+import inspect from './commands/inspect';
 
 const program = new Command();
 
@@ -29,6 +30,13 @@ program
   .option('-p, --port [port-number]', 'specify port number for server', '3000')
   .action(async (options) => {
     await start(options);
+  });
+
+program
+  .command('inspect')
+  .description('inspect webpack config')
+  .action(() => {
+    inspect();
   });
 
 program.parse();
