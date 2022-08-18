@@ -1,3 +1,8 @@
+//                LISP                      C
+// 2 + 2          (add 2 2)                 add(2, 2)
+// 4 - 2          (subtract 4 2)            subtract(4, 2)
+// 2 + (4 - 2)    (add 2 (subtract 4 2))    add(2, subtract(4, 2))
+
 function tokenizer (input: string) {
   let current = 0;
   let tokens = [];
@@ -228,8 +233,7 @@ function codeGenerator (node: any): any {
 
     case 'ExpressionStatement':
       return (
-        codeGenerator(node.expression) +
-        ';'
+        codeGenerator(node.expression)
       );
 
     case 'CallExpression':
@@ -255,9 +259,11 @@ function codeGenerator (node: any): any {
   }
 }
 
-function compiler (rawInput: string) {
+export function compiler (rawInput: string) {
   let tokens = tokenizer(rawInput);
+  console.log('tokens', tokens);
   let ast = parser(tokens);
+  console.log('ast', JSON.stringify(ast, null, 2));
   let newAst = transformer(ast);
   return codeGenerator(newAst);
 }
