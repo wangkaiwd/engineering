@@ -2,7 +2,7 @@ import type { Ast } from '../types';
 
 export const codeGenerator = (node: Ast): string => {
   if (node.type === 'NumberLiteral') {
-    return ' ' + node.value;
+    return node.value;
   }
   if (node.type === 'StringLiteral') {
     return `"${node.value}"`;
@@ -17,7 +17,7 @@ export const codeGenerator = (node: Ast): string => {
     return codeGenerator(node.expression);
   }
   if (node.type === 'CallExpression') {
-    return '(' + node.name + node.params.map(codeGenerator).join(' ') + ')';
+    return node.callee.name + '(' + node.arguments.map(codeGenerator).join(',') + ')';
   }
   throw new TypeError(node.value);
 };

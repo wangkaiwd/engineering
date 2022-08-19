@@ -1,17 +1,19 @@
-import { compile} from '../compile';
+import { compile } from '../compile';
 import { tokenizer } from '../core/tokenizer';
 import { parser } from '../core/parser';
 
 describe('Compiler', () => {
+  const tokens = [
+    { type: 'paren', value: '(' },
+    { type: 'name', value: 'add' },
+    { type: 'number', value: '2' },
+    { type: 'number', value: '2' },
+    { type: 'paren', value: ')' }
+  ];
   it('should get tokens', () => {
-    const tokens = [
-      { type: 'paren', value: '(' },
-      { type: 'name', value: 'add' },
-      { type: 'number', value: '2' },
-      { type: 'number', value: '2' },
-      { type: 'paren', value: ')' }
-    ];
     expect(tokenizer('(add 2 2)')).toEqual(tokens);
+  });
+  it('should get ast', () => {
     expect(parser(tokens)).toMatchInlineSnapshot(`
         Object {
           "body": Array [
@@ -33,6 +35,8 @@ describe('Compiler', () => {
           "type": "Program",
         }
     `);
-    compile('(add 2 (subtract 4 2))');
+  });
+  it('should compile code correctly', () => {
+    expect(compile('(add 2 (subtract 4 2))')).toBe('add(2,subtract(4,2))');
   });
 });
