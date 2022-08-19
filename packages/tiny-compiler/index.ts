@@ -261,9 +261,7 @@ function codeGenerator (node: any): any {
 
 export function compiler (rawInput: string) {
   let tokens = tokenizer(rawInput);
-  console.log('tokens', tokens);
   let ast = parser(tokens);
-  console.log('ast', JSON.stringify(ast, null, 2));
   let newAst = transformer(ast);
   return codeGenerator(newAst);
 }
