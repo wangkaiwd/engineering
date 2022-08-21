@@ -1,0 +1,12 @@
+{
+  "name": "sample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "sppk start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

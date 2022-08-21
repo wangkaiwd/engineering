@@ -7,10 +7,10 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import type { Server, StartOptions } from '../types';
 // @ts-ignore
 import FriendlyErrorsWebpackPlugin from '@nuxt/friendly-errors-webpack-plugin';
-// @ts-ignore
-import ProgressWebpackPlugin from 'progress-webpack-plugin';
+import WebpackBar from 'webpackbar';
 import { getIp } from '../shared/ip';
 import chalk from 'chalk';
+
 import { loadFileConfig } from '../shared/url';
 
 const cwd = process.cwd();
@@ -70,7 +70,7 @@ class DevServer {
       .use(HtmlWebpackPlugin, []);
     webpackChain
       .plugin('progress')
-      .use(ProgressWebpackPlugin);
+      .use(WebpackBar);
   };
   createServer = () => {
     const { devServer, ...restConfig } = this.webpackChain.toConfig();
@@ -85,7 +85,7 @@ class DevServer {
       },
       // disable webpack devServer log
       infrastructureLogging: {
-        level: 'none',
+        level: 'error',
       },
       ...restConfig,
     };
