@@ -9,7 +9,10 @@ import chalk from 'chalk';
 // Usage:
 // log[level](message)
 // log(message)
-type CliLogLevels = 'silly' | 'verbose' | 'info' | 'notice' | 'http' | 'warn' | 'error'
+
+const logLevels = ['silly', 'verbose', 'info', 'notice', 'http', 'warn', 'error'] as const;
+
+type CliLogLevels = typeof logLevels[number]
 type LevelFn = (message: string, ...args: any[]) => void
 type LogProps = {
   [k in CliLogLevels]: LevelFn;
@@ -26,8 +29,6 @@ const colorMap = {
   warn: 'yellow',
   error: 'red'
 } as const;
-
-const logLevels: CliLogLevels[] = ['silly', 'verbose', 'info', 'notice', 'http', 'warn', 'error'];
 
 const levelFnCreator = (level: CliLogLevels) => {
   return (message: string, ...args: any[]) => {

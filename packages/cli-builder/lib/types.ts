@@ -5,3 +5,9 @@ export interface StartOptions {
 }
 
 export type Server = InstanceType<typeof WebpackDevServer>
+
+export interface CreateOptions {
+  bare: true;
+}
+
+export type AsyncFn = (...args: any[]) => Promise<any>

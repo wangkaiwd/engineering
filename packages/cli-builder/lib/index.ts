@@ -3,6 +3,8 @@ import start from './commands/start';
 import { CLI_NAME, VERSION } from './shared/constant';
 import { setLogLevel } from './shared/logger';
 import inspect from './commands/inspect';
+import type { CreateOptions } from './types';
+import create from './commands/create';
 
 const program = new Command();
 
@@ -24,7 +26,14 @@ program
 // });
 
 program
-  // todo: try standalone command
+  .command('create <project-name>')
+  .description('create project with project name')
+  .option('-b, --bare', 'create bare project')
+  .action((name: string, options: CreateOptions) => {
+    create(name, options);
+  });
+
+program
   .command('start')
   .description('start a server for develop')
   .option('-p, --port [port-number]', 'specify port number for server', '3000')
