@@ -1,5 +1,5 @@
 import path from 'node:path';
-import glob from 'glob';
+import glob from 'fast-glob';
 import { copyFiles } from '../shared/file';
 import type { CreateOptions } from '../types';
 import { getDirname } from '../shared/url';
@@ -30,10 +30,10 @@ class Creator {
     console.log('answer', answer);
   };
   genTemplate = async () => {
-    const rootPath = path.resolve(cwd, this.options.projectName);
+    const projectRootPath = path.resolve(cwd, this.options.projectName);
     const templateDir = path.resolve(dirname, '../', '../', '../template');
-    const files = glob.sync('./**', { dot: true, cwd: templateDir, nodir: true });
-    await copyFiles(files, templateDir, rootPath);
+    const files = await glob('./**', { dot: true, cwd: templateDir, onlyFiles: true });
+    await copyFiles({ files: files, srcDir: templateDir, destDir: projectRootPath, presets: this.options });
   };
 }
 
