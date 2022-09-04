@@ -14,7 +14,7 @@ const dirname = getDirname(import.meta.url);
 const cwd = process.cwd();
 
 class Creator {
-  private options: CreatorOptions;
+  options: CreatorOptions;
 
   constructor (options: CreatorOptions) {
     this.options = options;

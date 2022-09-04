@@ -4,6 +4,7 @@ import Webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import WebpackChain from 'webpack-chain';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { VueLoaderPlugin } from 'vue-loader';
 import type { Server, StartOptions } from '../types';
 // @ts-ignore
 import FriendlyErrorsWebpackPlugin from '@nuxt/friendly-errors-webpack-plugin';
@@ -28,8 +29,12 @@ class DevServer {
 
   resolveUserConfig = async () => {
     const { fileConfig } = await loadFileConfig();
-    fileConfig.webpackChain(this.webpackChain);
+    if (fileConfig.webpackConfig) {
+      fileConfig.webpackChain(this.webpackChain);
+    }
+    return fileConfig;
   };
+
   createWebpackConfig = () => {
     const { port } = this.options;
     const webpackChain = this.webpackChain = new WebpackChain();
@@ -37,7 +42,7 @@ class DevServer {
     webpackChain
       .context(path.resolve(cwd))
       .entry('index')
-      .add('./src/index.js')
+      .add('./src/main.js')
       .end()
       .mode('development')
       .output
@@ -45,14 +50,45 @@ class DevServer {
       .path(outputPath)
       .clear()
       .end();
+
     // devServer
     webpackChain
       .devServer
-      .port(Number(port))
-      .end();
+      .port(Number(port));
 
+    // stats
     webpackChain
       .stats('errors-only');
+
+    // loader
+    webpackChain.module
+      .rule('style')
+      .test(/.(css|less)$/)
+      .use('style-loader')
+      .loader('style-loader')
+      .end()
+      .use('css-loader')
+      .loader('css-loader')
+      .end()
+      .use('less-loader')
+      .loader('less-loader')
+      .end()
+      .end()
+      // transform js
+      .rule('js')
+      .test(/.js$/)
+      .use('babel-loader')
+      .loader('babel-loader')
+      .end()
+      .end()
+      .rule('vue')
+      .test(/.vue$/)
+      .use('vue-loader')
+      .loader('vue-loader')
+      .end()
+      .end();
+
+    // plugin
     webpackChain
       .plugin('friendly-errors')
       .use(FriendlyErrorsWebpackPlugin, [{
@@ -64,13 +100,18 @@ class DevServer {
           ],
         }
       }]);
-
     webpackChain
       .plugin('html')
-      .use(HtmlWebpackPlugin, []);
+      .use(HtmlWebpackPlugin, [{ filename: 'index.html', template: './public/index.html' }]);
+
+    webpackChain
+      .plugin('vue')
+      .use(VueLoaderPlugin,[])
+
     webpackChain
       .plugin('progress')
       .use(WebpackBar);
+
   };
   createServer = () => {
     const { devServer, ...restConfig } = this.webpackChain.toConfig();
