@@ -106,7 +106,7 @@ class DevServer {
 
     webpackChain
       .plugin('vue')
-      .use(VueLoaderPlugin,[])
+      .use(VueLoaderPlugin, []);
 
     webpackChain
       .plugin('progress')
@@ -118,9 +118,12 @@ class DevServer {
     // webpackChain.
     this.webpackConfig = {
       devServer: {
-        static: outputPath,
+        static: {
+          directory: outputPath
+        },
         client: {
-          logging: 'error'
+          logging: 'none',
+
         },
         ...devServer
       },

@@ -16,6 +16,8 @@
 
 ### Record
 
+#### nodejs es module
+ 
 * [mandatory file extensions](https://nodejs.org/dist/latest-v14.x/docs/api/esm.html#esm_mandatory_file_extensions)
 * [pure-esm-package](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c#pure-esm-package)
 
@@ -28,6 +30,28 @@ or absolute specifiers. So I think wo have two choice:
 Problems:
 
 * __filename,__dirname work correctly in ts but occur error in js
+* Why use `spawn` to spawn a child process ? (need `stdio` ?)
+
+#### Error handle
+
+```ts
+// make use information of stats object
+webpck((err,stats) => {
+  // error and error stack in stats
+  // warning
+  console.log('stats',stats.toJson({all:false, errors:true, warning: true}))
+})
+```
+
+#### Plugin mechanism
+
+Core webpack config:
+* vue plugin to support vue
+
+study:
+*  umi plugin vs vue-cli plugin
+
+#### all babel plugin and preset which associate with react
 
 ### Rollup
 

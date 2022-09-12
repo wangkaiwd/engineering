@@ -29,8 +29,8 @@ program
   .command('create <project-name>')
   .description('create project with project name')
   .option('-b, --bare', 'create bare project')
-  .action((name: string, options: CreateOptions) => {
-    create(name, options);
+  .action(async (name: string, options: CreateOptions) => {
+    await create(name, options);
   });
 
 program
